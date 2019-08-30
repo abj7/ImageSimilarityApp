@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Similarity App</title>
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10%; min-height: 400px;') }}
+</head>
+<body>
+    <h1>Similar Image Finder</h1>
+    <form action="{{ url_for('query')}}" method="POST">
+        <button>Query</button>
+    </form>
+    {{ dropzone.create(action='upload') }}
+    {{ dropzone.load_js() }}
+    {{ dropzone.config() }}
+</body>
+</html>
