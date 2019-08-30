@@ -7,7 +7,7 @@ from similar import findsim
 from flask import Flask, render_template, request, session, url_for, redirect
 from flask_dropzone import Dropzone
 from flask_uploads import UploadSet, configure_uploads, patch_request_class, IMAGES
-import pathlib
+from werkzeug.utils import secure_filename
 
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -51,11 +51,17 @@ def query():
     if "file_urls" not in session or session['file_urls'] == []:
         return redirect(url_for('upload'))
     filenames = session['file_urls']
-    print ("hi" , filenames)
-    topn = findsim(filenames)
+
+    query_image = ""
+    if 'photo' in request.files and request.method == "POST":
+        photo = request.files['photo']
+        filename = secure_filename(photo.filename)
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        query_image = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    topn = findsim(filenames, query_image)
     sim = []
     for i in topn[0]:
-        print (i)
         sim.append(os.path.join(app.config['UPLOAD_FOLDER'], os.path.split(filenames[i])[1]))
     session.pop('file_urls', None)
     return render_template('results.html', file_urls = sim)

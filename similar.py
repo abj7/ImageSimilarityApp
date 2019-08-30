@@ -2,7 +2,6 @@ from numpy import *
 from PIL import Image
 import time
 import os
-import scipy.spatial.distance as dis
 
 bins = 4
 rv = 256
@@ -31,7 +30,6 @@ def signature(img, sec):
 
 def sketch(M, k):
     w,h = M.shape
-
 
     rand = random.randn(k, h)
 
@@ -64,7 +62,7 @@ def loadImages(path):
         loadedImages.append(img)
     return loadedImages
 
-def findsim(filenames):
+def findsim(filenames, query_filename = "data/anchor/image_0001.jpg"):
     imgs = []
     for filename in filenames:
         img = Image.open(filename)
@@ -79,7 +77,7 @@ def findsim(filenames):
 
     sketches = sketch(mat, rv)
 
-    pic_sketch = sketch(array([signature(Image.open("data/anchor/image_0005.jpg"), bins)]), rv)
+    pic_sketch = sketch(array([signature(Image.open(query_filename).convert('RGB'), bins)]), rv)
 
     scores = dot(transpose(pic_sketch), sketches)
     print (scores)
